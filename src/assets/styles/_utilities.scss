@@ -1,0 +1,26 @@
+.flex-col {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+.flex-row {
+	display: flex;
+	align-items: center;
+}
+.one-line {
+	display: block;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+.center {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+.font-medium{
+	font-size: 12px;
+	color: $gray-text2;
+}
