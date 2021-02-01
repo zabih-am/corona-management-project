@@ -1,6 +1,6 @@
 <template>
   <div class="users">
-    <div class="users__header">
+    <!-- <div class="users__header">
       <v-row>
         <v-col cols="12" lg="12" md="12">
           <div class="users__header--name">All Patients</div>
@@ -15,37 +15,47 @@
     </div>
     <div class="users__content">
       <UserCardDesktop v-for="user in users" :key="user.id" :user="user"/>
-    </div>
+      <div class="users__loading" v-if="loading">
+        <v-progress-circular
+          :size="70"
+          :width="7"
+          color="blue"
+          indeterminate
+        ></v-progress-circular>
+      </div>
+    </div> -->
+    <UserCardMobile v-for="user in users" :key="user.id" :user="user"/>
   </div>
 </template>
 <script>
+import { getUsers } from '@/services/api/usersService'
 export default {
   name: 'Users',
   components: {
-    UserCardDesktop: ()=> import(/* webpackChunkName: "UserCardDesktop" */ './UserCardDesktop'),
-    // UserCardMobile: ()=> import(/* webpackChunkName: "UserCardMobile" */ './UserCardMobile')
+    // UserCardDesktop: ()=> import(/* webpackChunkName: "UserCardDesktop" */ './UserCardDesktop'),
+    UserCardMobile: ()=> import(/* webpackChunkName: "UserCardMobile" */ './UserCardMobile')
   },
   data(){
     return{
-      users: [
-        {id:0 ,name: 'Ali Ahmadi', img: 'https://cutt.ly/Cke0L30', lastSeen: 'Update 1 day ago', city: 'Tehran', birthday: 'on 24 05 2000', registerDay: 'May 26, 2020', registerTime: '7:30 PM', level: 'HIGH'},
-        {id:1 ,name: 'Mohammad Safa', img: 'https://cutt.ly/yke0Ibz', lastSeen: 'Update 1 day ago', city: 'Tehran', birthday: 'on 24 05 2000', registerDay: 'May 26, 2020', registerTime: '7:30 PM', level: 'NORMAL'},
-        {id:2 ,name: 'Zabih Heydari', img: 'https://cutt.ly/yke00Hh', lastSeen: 'Update 1 day ago', city: 'Tehran', birthday: 'on 24 05 2000', registerDay: 'May 26, 2020', registerTime: '7:30 PM', level: 'LOW'},
-        {id:3 ,name: 'Sepehr Mohammadi', img: 'https://cutt.ly/ake0Rpd', lastSeen: 'Update 1 day ago', city: 'Tehran', birthday: 'on 24 05 2000', registerDay: 'May 26, 2020', registerTime: '7:30 PM', level: 'HIGH'},
-        {id:4 ,name: 'Maria Gomez', img: 'https://cutt.ly/Eke0QD1', lastSeen: 'Update 1 day ago', city: 'Tehran', birthday: 'on 24 05 2000', registerDay: 'May 26, 2020', registerTime: '7:30 PM', level: 'NORMAL'},
-        {id:5 ,name: 'Sepehr Mohammadi', img: 'https://cutt.ly/ake0Rpd', lastSeen: 'Update 1 day ago', city: 'Tehran', birthday: 'on 24 05 2000', registerDay: 'May 26, 2020', registerTime: '7:30 PM', level: 'LOW'},
-        {id:6 ,name: 'Maria Gomez', img: 'https://cutt.ly/eke0YrG', lastSeen: 'Update 1 day ago', city: 'Tehran', birthday: 'on 24 05 2000', registerDay: 'May 26, 2020', registerTime: '7:30 PM', level: 'LOW'},
-        {id:7 ,name: 'Ali Ahmadi', img: 'https://cutt.ly/yke0Ibz', lastSeen: 'Update 1 day ago', city: 'Tehran', birthday: 'on 24 05 2000', registerDay: 'May 26, 2020', registerTime: '7:30 PM', level: 'HIGH'},
-        {id:8 ,name: 'Zabih Heydari', img: 'https://cutt.ly/ike0PRX', lastSeen: 'Update 1 day ago', city: 'Tehran', birthday: 'on 24 05 2000', registerDay: 'May 26, 2020', registerTime: '7:30 PM', level: 'NORMAL'},
-        {id:9 ,name: 'Mohammad Safa', img: 'https://cutt.ly/Kke0DMR', lastSeen: 'Update 1 day ago', city: 'Tehran', birthday: 'on 24 05 2000', registerDay: 'May 26, 2020', registerTime: '7:30 PM', level: 'HIGH'},
-        {id:10 ,name: 'alireza ahmadi', img: 'https://cutt.ly/3ke0H2h', lastSeen: 'Update 1 day ago', city: 'Tehran', birthday: 'on 24 05 2000', registerDay: 'May 26, 2020', registerTime: '7:30 PM', level: 'LOW'},
-        {id:11 ,name: 'Ali Ahmadi', img: 'https://cutt.ly/Cke0L30', lastSeen: 'Update 1 day ago', city: 'Tehran', birthday: 'on 24 05 2000', registerDay: 'May 26, 2020', registerTime: '7:30 PM', level: 'LOW'},
-        {id:12 ,name: 'Zabih Heydari', img: 'https://cutt.ly/Fke0Vsm', lastSeen: 'Update 1 day ago', city: 'Tehran', birthday: 'on 24 05 2000', registerDay: 'May 26, 2020', registerTime: '7:30 PM', level: 'NORMAL'},
-        {id:13 ,name: 'Sepehr Mohammadi', img: 'https://cutt.ly/3ke0Ntl', lastSeen: 'Update 1 day ago', city: 'Tehran', birthday: 'on 24 05 2000', registerDay: 'May 26, 2020', registerTime: '7:30 PM', level: 'LOW'},
-        {id:14 ,name: 'Ali Ahmadi', img: 'https://cutt.ly/Uke0MDs', lastSeen: 'Update 1 day ago', city: 'Tehran', birthday: 'on 24 05 2000', registerDay: 'May 26, 2020', registerTime: '7:30 PM', level: 'HIGH'},
-        {id:15 ,name: 'Maria Gomez', img: 'https://cutt.ly/yke00Hh', lastSeen: 'Update 1 day ago', city: 'Tehran', birthday: 'on 24 05 2000', registerDay: 'May 26, 2020', registerTime: '7:30 PM', level: 'NORMAL'}
-      ]
+      users: [],
+      loading: false
     }
+  },
+  methods: {
+    async getAllUsers(){
+      try{
+        this.loading = true
+        const users = await getUsers()
+        this.loading = false
+        this.users = users
+      }catch(e){
+        alert(e)
+        this.loading = false
+      }
+    }
+  },
+  created(){
+    this.getAllUsers()
   }
 }
 </script>
@@ -74,6 +84,14 @@ export default {
         color: $gray-text;
         font-size: 14px;
       }
+    }
+    &__loading{
+      width: 100%;
+      height: 100%;
+      margin-top: 3rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
 </style>

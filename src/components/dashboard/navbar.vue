@@ -38,6 +38,7 @@ export default {
     position: fixed;
     top: 0;
     right: 0;
+    z-index: 90;
     @media only screen and (max-width: 960px) {
       width: 100%;
     }

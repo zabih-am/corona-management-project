@@ -29,6 +29,7 @@ export default {
     right: 0;
     background: rgba(black,.5);
     transition: all 0.5s;
+    z-index: 95;
     @media only screen and (min-width: 960px) {
       display: none;
     }
