@@ -29,6 +29,6 @@ export const getUsers =async ()=> {
     const data = await users
     return data as IUser[]
   }catch(e){
-    console.log(e)
+    console.log(e) 
   }
 }

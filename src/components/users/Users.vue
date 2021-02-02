@@ -1,6 +1,7 @@
 <template>
+<div class="users__container">
   <div class="users">
-    <!-- <div class="users__header">
+    <div class="users__header">
       <v-row>
         <v-col cols="12" lg="12" md="12">
           <div class="users__header--name">All Patients</div>
@@ -23,16 +24,19 @@
           indeterminate
         ></v-progress-circular>
       </div>
-    </div> -->
+    </div>
+  </div>
+  <div class="users-mobile">
     <UserCardMobile v-for="user in users" :key="user.id" :user="user"/>
   </div>
+</div>
 </template>
 <script>
 import { getUsers } from '@/services/api/usersService'
 export default {
   name: 'Users',
   components: {
-    // UserCardDesktop: ()=> import(/* webpackChunkName: "UserCardDesktop" */ './UserCardDesktop'),
+    UserCardDesktop: ()=> import(/* webpackChunkName: "UserCardDesktop" */ './UserCardDesktop'),
     UserCardMobile: ()=> import(/* webpackChunkName: "UserCardMobile" */ './UserCardMobile')
   },
   data(){
@@ -62,10 +66,16 @@ export default {
 <style lang="scss" scoped>
 @import '../../assets/styles/variable.scss';
   .users{
+    &__container{
+      height: 90vh;
+    }
     background: $white;
     border-radius: .5rem;
     border: 1px solid $white3;
     min-height: 100%;
+    @media only screen and (max-width: 600px) {
+      display: none;
+    }
     &__header{
       width: 100%;
       height: 8rem;
@@ -92,6 +102,14 @@ export default {
       display: flex;
       justify-content: center;
       align-items: center;
+    }
+  }
+  .users-mobile{
+    width: 100%;
+    height: 100%;
+    display: none;
+    @media only screen and (max-width: 600px) {
+      display: block
     }
   }
 </style>

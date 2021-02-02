@@ -34,7 +34,7 @@ export default {
     height: 5rem;
     width: calc(100% - 16rem);
     background: $white2;
-    padding: 1rem;
+    padding: 1.5rem;
     position: fixed;
     top: 0;
     right: 0;

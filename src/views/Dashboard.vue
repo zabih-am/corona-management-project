@@ -9,7 +9,7 @@
 </template>
 <script>
 import Sidebar from '@/components/dashboard/Sidebar'
-import Navbar from '@/components/dashboard/navbar'
+import Navbar from '@/components/dashboard/Navbar'
 export default {
   components: {
     Sidebar,

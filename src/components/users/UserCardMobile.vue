@@ -1,5 +1,5 @@
 <template>
-  <v-card class="card__container ma-3" max-width="344">
+  <v-card min-width="100%" class="card__container my-3 mx-auto" max-width="344">
     <div class="card">
       <div class="card__avatar">
         <img class="card__img" :src="user.img" :alt="user.name">
@@ -9,9 +9,9 @@
         <div class="user__time one-line font-medium">{{user.lastSeen}}</div>
       </div>
     </div>
-    
+
     <v-card-actions>
-      <v-btn color="orange lighten-2" text @click="show = !show">more</v-btn>
+      <v-btn color="orange lighten-2" text @click="show = !show">{{show ? 'less' : 'more'}}</v-btn>
       <v-spacer></v-spacer>
       <v-btn icon @click="show = !show">
         <v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>

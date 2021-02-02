@@ -6,7 +6,7 @@ Vue.use(VueRouter)
 
 const routes: Array<RouteConfig> = [
   {
-    path: '/overview',
+    path: '/',
     name: 'Dashboard',
     component: Dashboard,
     children: [
@@ -23,8 +23,8 @@ const routes: Array<RouteConfig> = [
     ]
   },
   {
-    path: '',
-    redirect: {name: 'Dashboard'}
+    path: '*',
+    component: () => import(/* webpackChunkName: "NotFound" */ '../components/shared/NotFound.vue')
   }
 ]
 

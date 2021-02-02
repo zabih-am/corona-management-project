@@ -9,8 +9,8 @@
       <div class="sidebar__menu">
         <v-tabs vertical background-color="transparent" color="white">
           <v-tab>
-            <router-link to="/overview" active-class="active-link" class="sidebar__menu--item">
-              <svg :style="[selectedLink === '/overview' ? {fill: 'white'} : {fill : '#A4A6B3'}]" class="icon"><use xlink:href="../../assets/icons/sprite.svg#icon-pie-chart"></use></svg>
+            <router-link exact to="/" active-class="active-link" class="sidebar__menu--item">
+              <svg :style="[selectedLink === '/' ? {fill: 'white'} : {fill : '#A4A6B3'}]" class="icon"><use xlink:href="../../assets/icons/sprite.svg#icon-pie-chart"></use></svg>
               Overview
             </router-link>
           </v-tab>
