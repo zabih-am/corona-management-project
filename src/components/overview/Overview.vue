@@ -1,21 +1,21 @@
 <template>
   <div class="overview">
     <div class="overview__lables d-flex-sb">
-      <div class="overview__card d-flex-col-se" :class="{'overview__card--active': active}" @click="active = !active">
-        <div class="overview__card--title" :class="{'overview__card--title-active' : active}">total</div>
-        <div class="overview__card--number" :class="{'overview__card--number-active' : active}">70</div>
+      <div @click="getConfirmPatients('confirmed')" class="overview__card d-flex-col-se" :class="{'overview__card--active': activeName === 'confirmed'}">
+        <div class="overview__card--title" :class="{'overview__card--title-active' : activeName === 'confirmed'}">Confirmed</div>
+        <div class="overview__card--number" :class="{'overview__card--number-active' : activeName === 'confirmed'}">70</div>
       </div>
-      <div class="overview__card d-flex-col-se">
-        <div class="overview__card--title">active</div>
-        <div class="overview__card--number">100</div>
+      <div @click="getConfirmPatients('active')" class="overview__card d-flex-col-se" :class="{'overview__card--active': activeName === 'active'}">
+        <div class="overview__card--title" :class="{'overview__card--title-active' : activeName === 'active'}">Active</div>
+        <div class="overview__card--number" :class="{'overview__card--number-active' : activeName === 'active'}">100</div>
       </div>
-      <div class="overview__card d-flex-col-se">
-        <div class="overview__card--title">recovered</div>
-        <div class="overview__card--number">50</div>
+      <div @click="getConfirmPatients('recovered')" class="overview__card d-flex-col-se" :class="{'overview__card--active': activeName === 'recovered'}">
+        <div class="overview__card--title" :class="{'overview__card--title-active' : activeName === 'recovered'}">Recovered</div>
+        <div class="overview__card--number" :class="{'overview__card--number-active' : activeName === 'recovered'}">50</div>
       </div>
-      <div class="overview__card d-flex-col-se">
-        <div class="overview__card--title">Death</div>
-        <div class="overview__card--number">10</div>
+      <div @click="getConfirmPatients('death')" class="overview__card d-flex-col-se" :class="{'overview__card--active': activeName === 'death'}">
+        <div class="overview__card--title" :class="{'overview__card--title-active' : activeName === 'death'}">Death</div>
+        <div class="overview__card--number" :class="{'overview__card--number-active' : activeName === 'death'}">10</div>
       </div>
     </div>
     <div class="overview__chart">
@@ -23,7 +23,15 @@
         total covid 19 Graph
       </div>
       <div class="overview__chart--content">
-        <Graph :chartData="date" :germanyData="deathPatients" :iranData="recoveredPatients" :options="options"/>
+        <Graph v-if="loaded" :labels="date" :chartData="confirmedPatients"/>
+        <v-progress-circular
+          class="center"
+          v-if="!loaded"
+          :size="50"
+          :width="7"
+          color="blue"
+          indeterminate
+        ></v-progress-circular>
       </div>
     </div>
   </div>
@@ -32,6 +40,7 @@
 import Graph from '@/components/overview/Graph'
 import { getGermanyDataCovid , getIranDataCovid } from '@/services/api/graphService'
 import moment from "moment";
+
 export default {
   name: 'Overview',
   components: {
@@ -39,53 +48,63 @@ export default {
   },
   data(){
     return{
-      gradian: '',
-      active: false,
+      loaded: false,
+      activeName: this.$route.params.type,
       confirmedPatients: [],
       activePatients: [],
       deathPatients: [],
-      recoveredPatients: [], 
-      date: [],
+      recoveredPatients: [],
+      germanData: [],
+      iranData: [],
+      date: []
 
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-           xAxes: [{
-            gridLines: {
-              display: false,
-             },
-          }]
-        },
+    }
+  },
+  methods: {
+    getConfirmPatients(name){
+      if(name === 'confirmed'){
+        this.activeName = 'confirmed'
+        this.$router.push({params: {type: 'confirmed'}})
+      }else if(name === 'active'){
+        this.activeName = 'active'
+        this.$router.push({params: {type: 'active'}})
+      }else if(name === 'recovered'){
+        this.activeName = 'recovered'
+        this.$router.push({params: {type: 'recovered'}})
+      }else {
+        this.activeName = 'death'
+        this.$router.push({params: {type: 'death'}})
       }
     }
   },
-
-  async mounted(){
-    const germanyPatients = getGermanyDataCovid()
-      germanyPatients.then((data)=>{
-      const dataArray = data?.data
-      const newArray = dataArray.slice(dataArray.length-30 , dataArray.length)
-      console.log(newArray)
-      newArray.forEach( data =>{
-        const date =  moment(data.Date).format("MM/DD");
-        this.date.push(date)
-        this.activePatients.push(data.Active)
-        this.deathPatients.push(data.Deaths)
-        this.recoveredPatients.push(data.Recovered)
-        this.confirmedPatients.push(data.Confirmed)
-      })
-    }).catch((e)=>{
-      console.log(e)
-    })
-
-    // const iranPatients = getIranDataCovid().then((data)=>{
-    //   const dataArray = data.data
-    //   const newArray = dataArray.slice(dataArray.length - 30 , dataArray.length)
-    //   // console.log(newArray)
-    // })
-  }
-  
+ async created(){
+    try{
+			this.loaded = false
+			const grmanyPatients = await getGermanyDataCovid()
+			console.log(grmanyPatients?.data)
+			this.confirmedPatients= [],
+			this.activePatients= [],
+			this.deathPatients= [],
+			this.recoveredPatients= [],
+			this.date= []
+			const dataArray = grmanyPatients?.data
+			const newArray = dataArray.slice(dataArray.length-30 , dataArray.length)
+			newArray.forEach( (data)  =>{
+				const date =  moment(data.Date).format("MM/DD");
+				this.date.push(date)
+				this.activePatients.push(data.Active)
+				this.deathPatients.push(data.Deaths)
+				this.recoveredPatients.push(data.Recovered)
+				this.confirmedPatients.push(data.Confirmed)
+			})
+      this.loaded = true
+      console.log(this.loaded)
+		}
+		catch(e){
+			console.log(e)
+    }
+    console.log('confirmedPatients' , this.confirmedPatients)
+  }, 
 }
 </script>
 <style lang="scss" scoped>

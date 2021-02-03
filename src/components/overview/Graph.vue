@@ -6,66 +6,54 @@ export default {
   // mixins: [reactiveProp],
   // mixins: [VueChartJs.mixins.reactiveProp],
   name: 'Graph',
-  props: {
-    germanyData: {
-      type: Array,
-      default: null
-    },
-    iranData: {
-      type: Array,
-      default: null
-    },
-    options: {
-      type: Object,
-      default: null
-    },
-    chartData: {
-      type: Array,
-      default: null
-    }
-  },
+  props: ['chartData','labels'],
   data(){
     return{
-      // test: this.germanyData
     }
   },
   computed: {
     test:{
       get(){
-        
-        return this.germanyData
+        return this.$store.state.graphDataStore.confirmedPatients
       }
     }
   },
   async mounted () {
-    this.renderChart(
+      this.renderChart( 
       {
-        labels: this.chartData,
-        datasets: [ 
+        labels:this.labels,
+        datasets: [
           {
             label: 'Germany',
             strokeColor : "#ff6c23",
             borderColor: '#DFE0EB',
             backgroundColor : 'transparent',
             radius: 0,
-            data: this.test
+            data: this.chartData
           },
-          {
-            label: 'Iran',
-            backgroundColor : 'rgba(55, 82, 255, 0.1)',
-            borderColor: '#3751FF',
-            borderWidth: 3,
-            radius: 0,
-            data: this.iranData
-          }
+          // {
+          //   label: 'Iran',
+          //   backgroundColor : 'rgba(55, 82, 255, 0.1)',
+          //   borderColor: '#3751FF',
+          //   borderWidth: 3,
+          //   radius: 0,
+          //   data: this.$store.state.graphDataStore.deathPatients
+          // }
         ]
       },
-      this.options)
-  },
-  watch: {
-    test:function(){
-      console.log('data is change successfullys')
-    }
+     {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+           xAxes: [{
+            gridLines: {
+              display: false,
+             },
+          }]
+        },
+      }
+    )
+    console.log('graph created')
   }
 }
 </script>

@@ -13,9 +13,8 @@ import Navbar from '@/components/dashboard/Navbar'
 export default {
   components: {
     Sidebar,
-    Navbar
+    Navbar,
   },
-  
 }
 </script>
 <style lang="scss" scoped>

@@ -8,15 +8,15 @@
       </div>
       <div class="sidebar__menu">
         <v-tabs vertical background-color="transparent" color="white">
-          <v-tab>
-            <router-link exact to="/" active-class="active-link" class="sidebar__menu--item">
-              <svg :style="[selectedLink === '/' ? {fill: 'white'} : {fill : '#A4A6B3'}]" class="icon"><use xlink:href="../../assets/icons/sprite.svg#icon-pie-chart"></use></svg>
+          <v-tab exact-active-class exact active-class>
+            <router-link exact :to="{name: 'Overview', params: {type: test}}" active-class="active-link" class="sidebar__menu--item">
+              <svg :style="[selectedLink ? {fill: 'white'} : {fill : '#A4A6B3'}]" class="icon"><use xlink:href="../../assets/icons/sprite.svg#icon-pie-chart"></use></svg>
               Overview
             </router-link>
           </v-tab>
           <v-tab>
             <router-link to="/users" active-class="active-link"  class="sidebar__menu--item">
-              <svg :style="[selectedLink === '/users' ? {fill: 'white'} : {fill : '#A4A6B3'}]" class="icon"><use xlink:href="../../assets/icons/sprite.svg#icon-video"></use></svg>
+              <svg :style="[$route.path === '/users' ? {fill: 'white'} : {fill : '#A4A6B3'}]" class="icon"><use xlink:href="../../assets/icons/sprite.svg#icon-video"></use></svg>
               Patients
             </router-link>
           </v-tab>
@@ -52,7 +52,7 @@
             </router-link>
           </v-tab>
           <v-tab>
-            <router-link to="link6" class="sidebar__menu--item">
+            <router-link to="/link6" class="sidebar__menu--item">
               <svg class="icon"><use xlink:href="../../assets/icons/sprite.svg#icon-log-out"></use></svg>
               Logout
             </router-link>
@@ -71,14 +71,15 @@ export default {
   computed: {
     selectedLink:{
       get(){
-        return this.$route.path ?? ''
+        return this.$route.params.type ?? ''
+      }
+    },
+    test: {
+      get(){
+        return this.$route.params.type ?? 'confirmed'
       }
     }
   },
-  created(){
-    console.log(this.$route.path)
-    console.log(this.$route.fullPath)
-  }
 }
 </script>
 <style lang="scss" scoped>

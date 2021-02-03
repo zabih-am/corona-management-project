@@ -9,9 +9,10 @@ const routes: Array<RouteConfig> = [
     path: '/',
     name: 'Dashboard',
     component: Dashboard,
+    redirect: {path:'/overview/confirmed'},
     children: [
       {
-        path: '/',
+        path: '/overview/:type',
         name: 'Overview',
         component: () => import(/* webpackChunkName: "overview" */ '../components/overview/Overview.vue')
       },
@@ -21,6 +22,10 @@ const routes: Array<RouteConfig> = [
         component: () => import(/* webpackChunkName: "users" */ '../components/users/Users.vue')
       }
     ]
+  },
+  {
+    path:'/',
+    redirect: {path:'/overview' , params: {type: 'confirmed'}}
   },
   {
     path: '*',
