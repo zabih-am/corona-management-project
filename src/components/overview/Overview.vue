@@ -1,19 +1,19 @@
 <template>
   <div class="overview">
     <div class="overview__lables d-flex-sb">
-      <div @click="getConfirmPatients('confirmed')" class="overview__card d-flex-col-se" :class="{'overview__card--active': activeName === 'confirmed'}">
+      <div @click="getTypePatients('confirmed')" class="overview__card d-flex-col-se" :class="{'overview__card--active': activeName === 'confirmed'}">
         <div class="overview__card--title" :class="{'overview__card--title-active' : activeName === 'confirmed'}">Confirmed</div>
         <div class="overview__card--number" :class="{'overview__card--number-active' : activeName === 'confirmed'}">70</div>
       </div>
-      <div @click="getConfirmPatients('active')" class="overview__card d-flex-col-se" :class="{'overview__card--active': activeName === 'active'}">
+      <div @click="getTypePatients('active')" class="overview__card d-flex-col-se" :class="{'overview__card--active': activeName === 'active'}">
         <div class="overview__card--title" :class="{'overview__card--title-active' : activeName === 'active'}">Active</div>
         <div class="overview__card--number" :class="{'overview__card--number-active' : activeName === 'active'}">100</div>
       </div>
-      <div @click="getConfirmPatients('recovered')" class="overview__card d-flex-col-se" :class="{'overview__card--active': activeName === 'recovered'}">
+      <div @click="getTypePatients('recovered')" class="overview__card d-flex-col-se" :class="{'overview__card--active': activeName === 'recovered'}">
         <div class="overview__card--title" :class="{'overview__card--title-active' : activeName === 'recovered'}">Recovered</div>
         <div class="overview__card--number" :class="{'overview__card--number-active' : activeName === 'recovered'}">50</div>
       </div>
-      <div @click="getConfirmPatients('death')" class="overview__card d-flex-col-se" :class="{'overview__card--active': activeName === 'death'}">
+      <div @click="getTypePatients('death')" class="overview__card d-flex-col-se" :class="{'overview__card--active': activeName === 'death'}">
         <div class="overview__card--title" :class="{'overview__card--title-active' : activeName === 'death'}">Death</div>
         <div class="overview__card--number" :class="{'overview__card--number-active' : activeName === 'death'}">10</div>
       </div>
@@ -23,7 +23,7 @@
         total covid 19 Graph
       </div>
       <div class="overview__chart--content">
-        <Graph v-if="loaded" :labels="date" :chartData="confirmedPatients"/>
+        <Graph v-if="loaded" :labels="date" :chartData="germanyPatients" :chartData2="iranPatients"/>
         <v-progress-circular
           class="center"
           v-if="!loaded"
@@ -50,69 +50,98 @@ export default {
     return{
       loaded: false,
       activeName: this.$route.params.type,
-      confirmedPatients: [],
-      activePatients: [],
-      deathPatients: [],
-      recoveredPatients: [],
-      germanData: [],
+      germanyPatients: [],
+      iranPatients: [],
+      germanyData: [],
       iranData: [],
       date: []
-
     }
   },
   methods: {
-    getConfirmPatients(name){
-      if(name === 'confirmed'){
+    //click event for type of patients
+    getTypePatients(name){
+      if(name === 'confirmed' && this.activeName !== 'confirmed'){
         this.activeName = 'confirmed'
         this.$router.push({params: {type: 'confirmed'}})
-      }else if(name === 'active'){
+        this.changePatientsType('Confirmed')
+      }else if(name === 'active' && this.activeName !== 'active'){
         this.activeName = 'active'
         this.$router.push({params: {type: 'active'}})
-      }else if(name === 'recovered'){
+        this.changePatientsType('Active')
+        console.log('active is working')
+      }else if(name === 'recovered' && this.activeName !== 'recovered'){
         this.activeName = 'recovered'
-        this.$router.push({params: {type: 'recovered'}})
-      }else {
+        this.$router.push({params: {type: 'Recovered'}})
+        this.changePatientsType('Recovered')
+      }else if(name === 'death' && this.activeName !== 'death'){
         this.activeName = 'death'
         this.$router.push({params: {type: 'death'}})
+        this.changePatientsType('Deaths')
       }
+    },
+
+    async getGermanyData(){
+      try{
+        const germanyPatients = await getGermanyDataCovid()
+        this.date= []
+        const dataArray = germanyPatients?.data
+        const newArray = dataArray.slice(dataArray.length-30 , dataArray.length)
+        this.germanyData = newArray
+      }
+      catch(e){
+        console.log(e)
+      }
+    },
+
+    async getIranData(){
+      try{
+        this.loaded = false
+        const IranPatients = await getIranDataCovid()
+        this.date= []
+        const dataArray = IranPatients?.data
+        const newArray = dataArray.slice(dataArray.length-30 , dataArray.length)
+        this.iranData = newArray
+        this.loaded = true
+      }
+      catch(e){
+        console.log(e)
+      }
+    },
+    async changePatientsType( typePatients ){
+       this.germanyPatients = []
+       this.iranPatients = []
+       this.date = []
+        const newArray = this.germanyData.slice(this.germanyData.length-30 , this.germanyData.length)
+        newArray.forEach( (data)  =>{
+        const date =  moment(data.Date).format("MM/DD");
+        this.date.push(date)
+        this.germanyPatients.push(data[typePatients])
+      })
+      const newArray2 = this.iranData.slice(this.iranData.length-30 , this.iranData.length)
+      newArray2.forEach( (data) =>{
+      this.iranPatients.push(data[typePatients])
+      })
     }
   },
- async created(){
-    try{
-			this.loaded = false
-			const grmanyPatients = await getGermanyDataCovid()
-			console.log(grmanyPatients?.data)
-			this.confirmedPatients= [],
-			this.activePatients= [],
-			this.deathPatients= [],
-			this.recoveredPatients= [],
-			this.date= []
-			const dataArray = grmanyPatients?.data
-			const newArray = dataArray.slice(dataArray.length-30 , dataArray.length)
-			newArray.forEach( (data)  =>{
-				const date =  moment(data.Date).format("MM/DD");
-				this.date.push(date)
-				this.activePatients.push(data.Active)
-				this.deathPatients.push(data.Deaths)
-				this.recoveredPatients.push(data.Recovered)
-				this.confirmedPatients.push(data.Confirmed)
-			})
-      this.loaded = true
-      console.log(this.loaded)
-		}
-		catch(e){
-			console.log(e)
+  async created(){
+    await this.getGermanyData(),
+    await this.getIranData()
+    if(this.iranData && this.germanyData){
+      this.changePatientsType('Confirmed')
     }
-    console.log('confirmedPatients' , this.confirmedPatients)
   }, 
 }
 </script>
+
 <style lang="scss" scoped>
 @import '../../assets/styles/variable.scss';
   .overview{
     &__lables{
       flex-wrap: wrap;
       margin-bottom: 2rem;
+      @media only screen and (max-width: 1300px) {
+        justify-content: center !important;
+      }
     }
     &__card{
       width: 16rem;
@@ -121,6 +150,11 @@ export default {
       border-radius: .5rem;
       border: 1px solid $white3;
       cursor: pointer;
+      margin: .5rem;
+      @media only screen and (max-width: 1400px) {
+        width: 14rem;
+        height: 7rem;
+      }
       &--active{
         border: 1px solid $blue;
       }
